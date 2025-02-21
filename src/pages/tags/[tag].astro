@@ -1,0 +1,48 @@
+---
+// ダイナミックルーティング
+export function getStaticPaths() {
+    return [
+        { params: { tag: 'astro' } },
+        { params: { tag: 'javascript' } },
+    ];
+};
+
+const { tag } = Astro.params;
+
+// 投稿の型を定義
+interface Post {
+    frontmatter: {
+        title: string;
+        tags?: string[];
+    };
+    url: string;
+}
+
+// import.meta.glob を使用して Markdown ファイルを取得
+const allPostEntries = import.meta.glob('../blog/*.md', { eager: true });
+
+// 型アサーションを使って Post 型の配列として扱う
+const allPosts = Object.values(allPostEntries) as Post[];
+
+// frontmatter.tags を確認し、対象のタグを含む投稿のみを取得
+const filteredPosts = allPosts.filter((post) => post.frontmatter.tags?.includes(tag));
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+	<h1>タグ：{tag}のブログ</h1>
+    
+    <ul>
+        {filteredPosts.map((post) => (
+            <li>
+                <a href={post.url}>{post.frontmatter.title}</a>
+            </li>
+        ))}
+    </ul>
+</body>
+</html>

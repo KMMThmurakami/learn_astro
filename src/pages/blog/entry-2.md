@@ -1,7 +1,7 @@
 ---
 layout: ../../layouts/MarkdownLayout.astro
 title: エントリー
-tags: javascript
+tags: astro
 ---
 
-javascriptの話題です
+astroの話題です
